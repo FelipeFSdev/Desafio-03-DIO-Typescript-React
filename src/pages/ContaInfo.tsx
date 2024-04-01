@@ -1,20 +1,32 @@
-import { useContext } from "react"
-import { Route, Routes } from "react-router-dom"
-import { AppContext } from "./components/AppContext"
-import Conta from "./pages/Conta"
-import ContaInfo from "./pages/ContaInfo"
-import Home from "./pages/Home"
+import { Center, SimpleGrid } from "@chakra-ui/react"
+import { getUserData } from "../services/storage";
+import { useState, useEffect } from "react";
+import CardInfo from "../components/CardInfo";
 
-const MainRoutes = () => {
-    const { isLoggedIn } = useContext(AppContext)
+
+const ContaInfo = () => {
+    const userStorage = getUserData();
+    const [accountName, setAccountName] = useState<string>("");
+    const [accountEmail, setAccountEmail] = useState<string>("");
+
+    useEffect(() => {
+        if (userStorage) {
+            const { name } = JSON.parse(userStorage);
+            const { email } = JSON.parse(userStorage);
+            setAccountName(name)
+            setAccountEmail(email)
+        };
+    }, [userStorage]);
 
     return (
-        <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/conta/:id' element={isLoggedIn ? <Conta /> : <Home />} />
-            <Route path='/infoconta' element={isLoggedIn ? <ContaInfo /> : <Home />} />
-        </Routes>
+        <Center>
+            <SimpleGrid columns={2} spacing={8} padding="1%">
+                <CardInfo mainContent={`Name:`} content={`${accountName}`} />
+                <CardInfo mainContent={`Email:`} content={`${accountEmail}`} />
+            </SimpleGrid>
+        </Center>
+
     )
 }
 
-export default MainRoutes
+export default ContaInfo
