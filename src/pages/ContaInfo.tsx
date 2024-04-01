@@ -1,22 +1,20 @@
-import { Text } from "@chakra-ui/react"
-import { Link } from "react-router-dom"
+import { useContext } from "react"
+import { Route, Routes } from "react-router-dom"
+import { AppContext } from "./components/AppContext"
+import Conta from "./pages/Conta"
+import ContaInfo from "./pages/ContaInfo"
+import Home from "./pages/Home"
 
-const ContaInfo = () => { 
+const MainRoutes = () => {
+    const { isLoggedIn } = useContext(AppContext)
+
     return (
-        <>
-            <Text fontSize='3xl' fontWeight='bold'>
-                Informações da conta
-            </Text>
-            <Link to='/conta/1'>
-                <Text fontSize='xl'>
-                    Conta
-                </Text>
-            </Link>
-            <a href='/conta/1'>
-                Link com tag a
-            </a>
-        </>
+        <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/conta/:id' element={isLoggedIn ? <Conta /> : <Home />} />
+            <Route path='/infoconta' element={isLoggedIn ? <ContaInfo /> : <Home />} />
+        </Routes>
     )
 }
 
-export default ContaInfo
+export default MainRoutes
